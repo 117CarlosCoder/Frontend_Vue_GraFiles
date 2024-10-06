@@ -9,6 +9,8 @@ import { registerPlugins } from '@/plugins'
 
 // Components
 import App from './App.vue'
+import VueCookies from 'vue-cookies'; 
+
 
 
 
@@ -19,5 +21,7 @@ import { createApp } from 'vue'
 const app = createApp(App)
 
 registerPlugins(app)
+
+app.use(VueCookies);
 
 app.mount('#app')

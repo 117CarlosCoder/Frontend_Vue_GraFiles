@@ -8,7 +8,10 @@
 // Composables
 import { createRouter, createWebHistory } from 'vue-router'
 import index from '@/pages/index.vue';
-import GetEmployes from '@/pages/getEmployes.vue';
+import GetEmployes from '@/pages/Admin/getEmployes.vue';
+import Login from '@/pages/Login.vue';
+import Employee from '@/pages/Employee/Employee.vue';
+import Admin from '@/pages/Admin/Admin.vue';
 
 const routes = [
   {
@@ -17,9 +20,19 @@ const routes = [
     component: index
   },
   {
-    path:"/employes",
-    name:"Employes",
-    component: GetEmployes
+    path:"/admin/files",
+    name:"adminFiles",
+    component: Admin
+  },
+  {
+    path:"/employee/files",
+    name:"EmployeeFile",
+    component: Employee
+  },
+  {
+    path:"/login",
+    name:"Login",
+    component: Login
   }
 ]
 

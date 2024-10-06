@@ -4,7 +4,7 @@
       <v-app-bar-title>GraFiles</v-app-bar-title>
       <v-spacer></v-spacer>
       <v-icon small>mdi-account</v-icon>
-      <v-btn text @click="redirectToEmployees">Iniciar Sesión</v-btn>
+      <v-btn text @click="login">Iniciar Sesión</v-btn>
     </v-app-bar>
 
     <v-main>
@@ -49,7 +49,7 @@
                   color="primary"
                   x-large
                   block
-                  @click="redirectToEmployees"
+                  @click="login"
                 >
                   Iniciar Sesión
                 </v-btn>
@@ -87,12 +87,12 @@ export default {
   setup() {
     const router = useRouter();
 
-    const redirectToEmployees = () => {
-      router.push('/employes');  // Asegúrate de que el nombre de la ruta esté bien escrito
+    const login = () => {
+      router.push('/login');  
     };
 
     return {
-      redirectToEmployees
+      login
     };
   }
 };
