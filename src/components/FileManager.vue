@@ -1,8 +1,8 @@
 <template>
   <v-card class=" pa-0 h-100 w-100">
     
-      <v-row class="pa-0 ma-0 h-100">
-        <v-col cols="2">
+      <v-row class="pa-0 ma-0">
+        <v-col class="pa-0" >
           <v-navigation-drawer
             expand-on-hover
             rail
@@ -33,10 +33,8 @@
           </v-navigation-drawer>
         </v-col>
         <v-container fluid class="fill-height h-100 w-100 pa-0 ma-0">
-          <v-main class="h-100 w-100 pa-5 ma-0">
-            <h1 v-if="folder && role === 'EMPLOYEE'">Hola1 Employee</h1>
-            <GetEmployes v-if="folder && role === 'ADMIN'" class="w-100 h-auto "></GetEmployes>
-            <h1 v-if="folder && role === 'ADMIN'">Hola1 Admin</h1>
+          <v-main class="h-100 w-100 pa-0 ma-0">
+            <Files v-if="folder" ></Files>
             <h1 v-if="share && role === 'EMPLOYEE'">Hola2 Employee</h1>
             <h1 v-if="share && role === 'ADMIN'">Hola2 Admin</h1>
             <h1 v-if="config && role === 'EMPLOYEE'">Hola3 Employee</h1>
@@ -51,6 +49,7 @@
 
 <script>
 import GetEmployes from '@/pages/Admin/getEmployes.vue';
+import Files from './Files.vue';
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
