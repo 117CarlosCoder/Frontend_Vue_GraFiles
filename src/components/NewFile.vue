@@ -1,55 +1,43 @@
 <template>
-    <div class="pa-4 text-center">
-    <v-dialog
-      v-model="dialog"
-      max-width="600"
-    >
+  <div class="pa-4 text-center">
+    <v-dialog v-model="dialog" max-width="600">
       <template v-slot:activator="{ props: activatorProps }">
-        <v-btn
-          class="text-none font-weight-regular"
-          prepend-icon="mdi-file"
-          text="Nuevo"
-          variant="tonal"
-          v-bind="activatorProps"
-        ></v-btn>
+        <v-btn class="text-none font-weight-regular" prepend-icon="mdi-file" text="Nuevo" variant="tonal"
+          v-bind="activatorProps">
+          Nuevo
+        </v-btn>
       </template>
 
-      <v-card
-        prepend-icon="mdi-file"
-        title="Nuevo Archivo o directorio"
-      >
+      <v-card title="Nuevo">
         <v-card-text>
-          <v-row dense>
-            <v-col
-            >
-              <v-text-field
-                v-model="fileName"
-                label="Nombre"
-                required
-              ></v-text-field>
-            </v-col>
-
-            
-          </v-row>
+          <v-btn class="ma-2" text="Crear Directorio" variant="tonal" @click="openCreateDirectory"></v-btn>
+          <v-btn class="ma-2" text="Crear Archivo" variant="tonal" @click="openCreateFile"></v-btn>
         </v-card-text>
+      </v-card>
+    </v-dialog>
 
-        <v-divider></v-divider>
-
+    <v-dialog v-model="createDirectoryDialog" max-width="400">
+      <v-card title="Nuevo Directorio">
+        <v-card-text>
+          <v-text-field v-model="directoryName" label="Nombre del Directorio" required></v-text-field>
+        </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-btn text="Cancelar" variant="plain" @click="createDirectoryDialog = false"></v-btn>
+          <v-btn color="primary" text="Crear" variant="tonal" @click="createDirectory"></v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
-          <v-btn
-            text="cerrar"
-            variant="plain"
-            @click="dialog = false"
-          ></v-btn>
-
-          <v-btn
-            color="primary"
-            text="Crear"
-            variant="tonal"
-            @click="create(), dialog = false"
-          ></v-btn>
+    <v-dialog v-model="createFileDialog" max-width="600">
+      <v-card title="Crear Archivo">
+        <v-card-text>
+          <v-text-field v-model="fileName" label="Nombre del Archivo" required></v-text-field>
+          <v-select v-model="fileExtension" :items="extensions" label="Extensión del Archivo" required></v-select>
+          <v-textarea v-model="fileContent" label="Contenido del Archivo" rows="4" outlined required></v-textarea>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn text="Cancelar" variant="plain" @click="createFileDialog = false"></v-btn>
+          <v-btn color="primary" text="Crear y Subir" variant="tonal" @click="uploadFile"></v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -57,47 +45,120 @@
 </template>
 
 <script>
-    import { ref, onMounted } from 'vue';
-    import axios from 'axios';
+import { ref } from 'vue';
+import axios from 'axios';
 
 export default {
-    props: {
-        directory: {
-            type: Object, 
-            required: true
-        }
-    },
-    data: () => ({
-      dialog: false,
-    }),
-    setup(props,{emit}) { 
-        
-        const fileName = ref("");
-
-        const create = async () =>{
-            const loadData = {
-                "name" : fileName.value,
-                "directory" : props.directory.directory+1,
-                "directory_parent_id" : props.directory.id
-            }
-
-                console.log(loadData)
-
-             try {
-                const response = await axios.post(`http://localhost:8080/directory/created`, loadData,{ withCredentials: true });
-                emit('created');
-                
-            } catch (error) {
-                console.error("Error fetching files:", error);
-            }
-
-
-        }
-
-        return {
-            create,
-            fileName
-        };
+  props: {
+    directory: {
+      type: Object,
+      required: true
     }
+  },
+  setup(props, { emit }) {
+    const dialog = ref(false);
+    const createDirectoryDialog = ref(false);
+    const createFileDialog = ref(false);
+    const directoryName = ref('');
+    const fileName = ref('');
+    const fileContent = ref('');
+    const fileExtension = ref('');
+    const extensions = ref(['.txt', '.md', '.json', '.csv']);
+    const fileNameError = ref('');
+
+    const openCreateDirectory = () => {
+      directoryName.value = '';;
+      createDirectoryDialog.value = true;
+      dialog.value = false;
+    };
+
+    const openCreateFile = () => {
+      fileNameError.value = '';
+      fileName.value = '';
+      fileExtension.value = '';
+      fileContent.value = '';
+      createFileDialog.value = true;
+      
+      dialog.value = false;
+    };
+
+    const createDirectory = async () => {
+      const loadData = {
+        name: directoryName.value,
+        directory: props.directory.directory + 1,
+        directory_parent_id: props.directory.id
+      };
+
+      try {
+        await axios.post(`http://localhost:8080/directory/created`, loadData, { withCredentials: true });
+        emit('created');
+        createDirectoryDialog.value = false;
+        
+      } catch (error) {
+        console.error('Error creando el directorio:', error);
+      }
+    };
+
+    const uploadFile = async () => {
+      const regex = /^[a-zA-Z0-9-_]+$/;
+
+      if (!fileName.value || !fileExtension.value || !fileContent.value) {
+        alert('Faltan datos para crear el archivo');
+        
+        return;
+      }
+
+      if (!regex.test(fileName.value)) {
+        fileNameError.value = 'El nombre del archivo solo puede contener letras, números, guiones (-) y guiones bajos (_).';
+        alert(fileNameError.value);
+        if (createFileDialog) {
+          fileName.value = '';
+        }
+        
+        
+        return;
+      }
+
+      const blob = new Blob([fileContent.value], { type: 'text/plain' });
+      const fullFileName = `${fileName.value}${fileExtension.value}`;
+
+      // Crear FormData para enviar el archivo
+      const formData = new FormData();
+      formData.append('file', new File([blob], fullFileName));
+      formData.append('directoryId', props.directory.id);
+
+      try {
+
+        const response = await axios.post(`http://localhost:8080/file/created`, formData, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        console.log(response.data);
+        createFileDialog.value = false;
+        emit('created');
+        
+      } catch (error) {
+        console.error('Error subiendo el archivo:', error);
+      }
+    };
+
+    return {
+      dialog,
+      createDirectoryDialog,
+      createFileDialog,
+      directoryName,
+      fileName,
+      fileContent,
+      fileExtension,
+      fileNameError,
+      extensions,
+      openCreateDirectory,
+      openCreateFile,
+      createDirectory,
+      uploadFile
+    };
+  }
 };
 </script>
