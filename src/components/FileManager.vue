@@ -1,49 +1,36 @@
 <template>
   <v-card class=" pa-0 h-100 w-100">
-    
-      <v-row class="pa-0 ma-0">
-        <v-col class="pa-0" >
-          <v-navigation-drawer
-            expand-on-hover
-            rail
-            permanent
-          >
-            <v-list>
-              <v-list-item
-                prepend-icon="mdi-account"
-                :subtitle="user.email"
-                :title="user.name"
 
-              ></v-list-item>
-            </v-list>
+    <v-row class="pa-0 ma-0">
+      <v-col class="pa-0">
+        <v-navigation-drawer expand-on-hover rail permanent>
+          <v-list>
+            <v-list-item prepend-icon="mdi-account" :subtitle="user.email" :title="user.name"></v-list-item>
+          </v-list>
 
-            <v-divider></v-divider>
+          <v-divider></v-divider>
 
-            <v-list density="compact" nav>
-              <v-list-item
-                prepend-icon="mdi-folder"
-                title="Archivos"
-                value="archivos"
-                @click="changeFolder"
-              >
-              </v-list-item>
-              <v-list-item prepend-icon="mdi-account-multiple" title="Compartido" value="Compartido" @click="changeShare"></v-list-item>
-              <v-list-item prepend-icon="mdi-cog" title="Configuracion" value="Configuracion" @click="changeConfig"></v-list-item>
-            </v-list>
-          </v-navigation-drawer>
-        </v-col>
-        <v-container fluid class="fill-height h-100 w-100 pa-0 ma-0">
-          <v-main class="h-100 w-100 pa-0 ma-0">
-            <Files v-if="folder" ></Files>
-            <h1 v-if="share && role === 'EMPLOYEE'">Hola2 Employee</h1>
-            <h1 v-if="share && role === 'ADMIN'">Hola2 Admin</h1>
-            <h1 v-if="config && role === 'EMPLOYEE'">Hola3 Employee</h1>
-            <h1 v-if="config && role === 'ADMIN'">Hola3 Admin</h1>
+          <v-list density="compact" nav>
+            <v-list-item prepend-icon="mdi-folder" title="Archivos" value="archivos" @click="changeFolder">
+            </v-list-item>
+            <v-list-item prepend-icon="mdi-account-multiple" title="Compartido" value="Compartido"
+              @click="changeShare"></v-list-item>
+            <v-list-item prepend-icon="mdi-cog" title="Configuracion" value="Configuracion"
+              @click="changeConfig"></v-list-item>
+          </v-list>
+        </v-navigation-drawer>
+      </v-col>
+      <v-container fluid class="fill-height h-100 w-100 pa-0 ma-0">
+        <v-main class="h-100 w-100 pa-0 ma-0">
+          <Files v-if="folder"></Files>
+          <FilesShared v-if="share"></FilesShared>
+          <h1 v-if="config && role === 'EMPLOYEE'">Hola3 Employee</h1>
+          <h1 v-if="config && role === 'ADMIN'">Hola3 Admin</h1>
 
-          </v-main>
-        </v-container>
-      </v-row>
-    
+        </v-main>
+      </v-container>
+    </v-row>
+
   </v-card>
 </template>
 
@@ -52,24 +39,25 @@ import GetEmployes from '@/pages/Admin/getEmployes.vue';
 import Files from './Files.vue';
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import FilesShared from './FilesShared.vue';
 
 export default {
   components: {
-    GetEmployes, // Registra el componente
+    GetEmployes, 
   },
   setup() {
     const folder = ref(true);
     const share = ref(false);
-    const config = ref(false); 
+    const config = ref(false);
     const role = ref(localStorage.getItem('userRole'));
     const user = ref({
-        name:'',
-        email:''
+      name: '',
+      email: ''
     });
 
     onMounted(async () => {
       try {
-        const response = await axios.get('http://localhost:8080/user/get/info', {withCredentials:true});
+        const response = await axios.get('http://localhost:8080/user/get/info', { withCredentials: true });
         user.value = response.data;
         console.log(user.value)
       } catch (error) {
@@ -80,19 +68,19 @@ export default {
     const changeFolder = () => {
       share.value = false;
       config.value = false;
-      folder.value = true; 
+      folder.value = true;
     };
-    
+
     const changeShare = () => {
       config.value = false;
-      folder.value = false; 
-      share.value = true; 
+      folder.value = false;
+      share.value = true;
     };
 
     const changeConfig = () => {
-      config.value = true; 
-      folder.value = false; 
-      share.value = false; 
+      config.value = true;
+      folder.value = false;
+      share.value = false;
     };
 
     return {

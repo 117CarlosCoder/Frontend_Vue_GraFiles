@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="pa-0">
     <v-toolbar flat>
-      <NewFile @created="fetchFilesChange" :directory="fileActual" />
+      <NewFile @created="fetchFiles" :directory="fileActual" />
       <v-btn icon @click="goHome">
         <v-icon>mdi-home</v-icon>
       </v-btn>
@@ -39,16 +39,50 @@
     :lg="isListView ? 12 : 3"
   >
   <v-card 
-      @click="selectDirectory(file)"
+      @dblclick="selectDirectory(file)"
       hover
       :class="{ 'selected': selectDirectorys.includes(file.id) }"
     >
       <v-card-title  class="text-h6 font-weight-bold white--text">
         {{ file.name }}
       </v-card-title>
-      <v-card-actions :class="file.fileType ? 'bg-primary' : 'bg-grey-darken-3'" >
+      <v-card-actions v-if="isImageType(file.fileType)" :class="'bg-warning'" >
         <v-icon class="mr-2">
-          {{ file.fileType ? 'mdi-file' : 'mdi-folder' }}
+          {{'mdi-image-album' }}
+        </v-icon>
+        <span class="text-body-2 grey--text text--lighten-1">{{ formatDate(file.updated) }}</span>
+        <v-spacer></v-spacer>
+        <v-menu offset-y>
+          <template v-slot:activator="{ props }">
+            <v-btn icon small v-bind="props" @click.stop>
+              <v-icon color="grey-lighten-1">mdi-dots-vertical</v-icon>
+            </v-btn>
+          </template>
+          <template v-if="file">
+            <MultiDialog @change="fetchFiles" :file="file" />
+          </template>
+        </v-menu>
+      </v-card-actions>
+      <v-card-actions v-else-if="file.fileType" :class="'bg-primary'" >
+        <v-icon class="mr-2">
+          {{ 'mdi-folder' }}
+        </v-icon>
+        <span class="text-body-2 grey--text text--lighten-1">{{ formatDate(file.updated) }}</span>
+        <v-spacer></v-spacer>
+        <v-menu offset-y>
+          <template v-slot:activator="{ props }">
+            <v-btn icon small v-bind="props" @click.stop>
+              <v-icon color="grey-lighten-1">mdi-dots-vertical</v-icon>
+            </v-btn>
+          </template>
+          <template v-if="file">
+            <MultiDialog @change="fetchFilesChange" :file="file" />
+          </template>
+        </v-menu>
+      </v-card-actions>
+      <v-card-actions v-else :class="'bg-grey-darken-3'" >
+        <v-icon class="mr-2">
+          {{'mdi-folder' }}
         </v-icon>
         <span class="text-body-2 grey--text text--lighten-1">{{ formatDate(file.updated) }}</span>
         <v-spacer></v-spacer>
@@ -202,7 +236,10 @@ export default {
       console.log("Show info");
     };
 
-   
+
+    const isImageType = (fileType) => {
+            return fileType && fileType.startsWith('image/');
+        };
 
     const formatDate = (dateString) => {
       const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
@@ -255,7 +292,8 @@ export default {
       goHome,
       routeSave,
       breadcrumbItems,
-      breadcrumbNavigate
+      breadcrumbNavigate,
+      isImageType
     };
   }
 };
