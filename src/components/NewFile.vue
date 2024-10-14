@@ -1,4 +1,5 @@
 <template>
+   <Alerta v-if="errorMessage" :message="errorMessage" />
   <div class="pa-4 text-center">
     <v-dialog v-model="dialog" max-width="600">
       <template v-slot:activator="{ props: activatorProps }">
@@ -76,6 +77,7 @@
 <script>
 import { ref } from 'vue';
 import axios from 'axios';
+import Alerta from './Alerta.vue';
 
 export default {
   props: {
@@ -84,6 +86,11 @@ export default {
       required: true
     }
   },
+  components: {
+    Alerta
+  },
+  
+    emits: ['created'],
   setup(props, { emit }) {
     const dialog = ref(false);
     const createDirectoryDialog = ref(false);
@@ -93,11 +100,12 @@ export default {
     const fileName = ref('');
     const fileContent = ref('');
     const fileExtension = ref('');
-    const extensions = ref(['.txt', '.md', '.json', '.csv']);
+    const extensions = ref(['.txt', '.html']);
     const fileNameError = ref('');
     const imageFile = ref(null);
     const imageName = ref('');
     const imagePreview = ref(null);
+    const errorMessage = ref('');
 
 
 
@@ -134,6 +142,7 @@ export default {
         emit('created');
         createDirectoryDialog.value = false;
       } catch (error) {
+        errorMessage.value = error.response.data || error.message || 'Ocurrió un error inesperado';
         console.error('Error creando el directorio:', error);
       }
     };
@@ -170,6 +179,7 @@ export default {
         createFileDialog.value = false;
         emit('created');
       } catch (error) {
+        errorMessage.value = error.response.data || error.message || 'Ocurrió un error inesperado';
         console.error('Error subiendo el archivo:', error);
       }
     };
@@ -216,6 +226,7 @@ export default {
   } catch (error) {
     console.error('Error subiendo la imagen:', error);
     if (error.response) {
+      errorMessage.value = error.response.data || error.message || 'Ocurrió un error inesperado';
       console.error('Detalles del error:', error.response.data);
       alert(`Error: ${error.response.data.message || 'Ya exite un archivo con ese nomnbre'}`);
     }
@@ -244,7 +255,8 @@ export default {
       uploadImage,
       imageName,
       previewImage,
-      imagePreview
+      imagePreview,
+      errorMessage
     };
   }
 };

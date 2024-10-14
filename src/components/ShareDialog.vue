@@ -31,6 +31,10 @@
             <v-list-item-subtitle>{{ file.fileType }}</v-list-item-subtitle>
           </v-list-item>
           <v-list-item>
+            <v-list-item-title class="font-weight-bold">Compartido por :</v-list-item-title>
+            <v-list-item-subtitle>{{ file.userShared }}</v-list-item-subtitle>
+          </v-list-item>
+          <v-list-item>
             <v-list-item-title class="font-weight-bold">Tamaño:</v-list-item-title>
             <v-list-item-subtitle>{{ formatFileSize(file.size) }}</v-list-item-subtitle>
           </v-list-item>

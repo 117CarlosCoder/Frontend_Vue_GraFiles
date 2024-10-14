@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="pa-0">
     <v-toolbar flat>
-      <NewFile @created="fetchFiles" :directory="fileActual" />
+      <NewFile @created="fetchFilesChange" :directory="fileActual" />
       <v-btn icon @click="goHome">
         <v-icon>mdi-home</v-icon>
       </v-btn>
@@ -13,7 +13,8 @@
         <v-icon>mdi-information</v-icon>
       </v-btn>
     </v-toolbar>
-
+    <Alerta v-if="errorMessage" :message="errorMessage" />
+    
     <v-breadcrumbs :items="breadcrumbItems" divider="/" class="pa-4">
       <template v-slot:item="{ item, index }">
         <v-breadcrumbs-item
@@ -59,13 +60,13 @@
             </v-btn>
           </template>
           <template v-if="file">
-            <MultiDialog @change="fetchFiles" :file="file" />
+            <MultiDialog @change="fetchFilesChange" :file="file" />
           </template>
         </v-menu>
       </v-card-actions>
       <v-card-actions v-else-if="file.fileType" :class="'bg-primary'" >
         <v-icon class="mr-2">
-          {{ 'mdi-folder' }}
+          {{ 'mdi-file' }}
         </v-icon>
         <span class="text-body-2 grey--text text--lighten-1">{{ formatDate(file.updated) }}</span>
         <v-spacer></v-spacer>
@@ -110,6 +111,8 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import NewFile from './NewFile.vue';
+import Alerta from './Alerta.vue';
+
 
 export default {
   components: {
@@ -131,6 +134,7 @@ export default {
     const editNameDialog = ref(false);
     const newFolderName = ref('');
     const breadcrumbItems = ref([{ text: 'Raiz', id: rootdirectory }]);
+    const errorMessage = ref('');
 
     const fetchFiles = async () => {
       directoryId.value = id.value === "" ? rootdirectory : id.value;
@@ -148,7 +152,10 @@ export default {
         files.value = [...files.value, ...responsefile.data];
         updateBreadcrumbs();
 
+    
+
       } catch (error) {
+        errorMessage.value = error || 'Hubo un problema con la solicitud.';
         console.error("Error fetching files:", error);
       }
     };
@@ -166,6 +173,7 @@ export default {
         files.value = [...files.value, ...responsefile.data];
         updateBreadcrumbs();
       } catch (error) {
+        errorMessage.value =error || 'Hubo un problema con la solicitud.';
         console.error("Error fetching files:", error);
       }
     };
@@ -195,6 +203,7 @@ export default {
         files.value = [...files.value, ...responsefile.data];
         updateBreadcrumbs();
       } catch (error) {
+        errorMessage.value =error || 'Hubo un problema con la solicitud.';
         console.error("Error fetching files:", error);
       }
     }
@@ -219,6 +228,7 @@ export default {
         arrowActive.value = routeSave.value.length > 0;
         updateBreadcrumbs();
       } catch (error) {
+        errorMessage.value = error || 'Hubo un problema con la solicitud.';
         console.error("Error fetching files:", error);
       }
     };
@@ -293,7 +303,8 @@ export default {
       routeSave,
       breadcrumbItems,
       breadcrumbNavigate,
-      isImageType
+      isImageType,
+      errorMessage
     };
   }
 };

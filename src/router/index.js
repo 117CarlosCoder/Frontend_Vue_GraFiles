@@ -8,7 +8,6 @@
 // Composables
 import { createRouter, createWebHistory } from 'vue-router'
 import index from '@/pages/index.vue';
-import GetEmployes from '@/pages/Admin/getEmployes.vue';
 import Login from '@/pages/Login.vue';
 import Employee from '@/pages/Employee/Employee.vue';
 import Admin from '@/pages/Admin/Admin.vue';

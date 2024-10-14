@@ -29,11 +29,6 @@
             <h2 class="text-h5 mt-4">Colaboración</h2>
             <p>Comparte archivos fácilmente con tus compañeros de trabajo.</p>
           </v-col>
-          <v-col cols="12" md="4" class="text-center">
-            <v-icon size="64" color="primary">mdi-shield-check</v-icon>
-            <h2 class="text-h5 mt-4">Acceso Controlado</h2>
-            <p>Gestiona los permisos de acceso a tus archivos.</p>
-          </v-col>
         </v-row>
 
         <v-row class="mt-12" align="center" justify="center">

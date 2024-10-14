@@ -24,8 +24,7 @@
         <v-main class="h-100 w-100 pa-0 ma-0">
           <Files v-if="folder"></Files>
           <FilesShared v-if="share"></FilesShared>
-          <h1 v-if="config && role === 'EMPLOYEE'">Hola3 Employee</h1>
-          <h1 v-if="config && role === 'ADMIN'">Hola3 Admin</h1>
+          <ChangePassword v-if="config"></ChangePassword>
 
         </v-main>
       </v-container>
@@ -35,16 +34,13 @@
 </template>
 
 <script>
-import GetEmployes from '@/pages/Admin/getEmployes.vue';
 import Files from './Files.vue';
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import FilesShared from './FilesShared.vue';
+import ChangePassword from './ChangePassword.vue';
 
 export default {
-  components: {
-    GetEmployes, 
-  },
   setup() {
     const folder = ref(true);
     const share = ref(false);

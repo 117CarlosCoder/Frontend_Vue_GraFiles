@@ -16,6 +16,15 @@
     >
         <div class="text-subtitle-1 text-medium-emphasis">Cuenta</div>
   
+        <v-alert
+        v-if="errorMessage"
+        type="error"
+        dismissible
+        class="mb-4"
+      >
+        {{ errorMessage }}
+      </v-alert>
+
         <v-text-field
           v-model="username"
           density="compact"
@@ -27,13 +36,14 @@
         <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
           Contraseña
   
+          <!--
           <a
             class="text-caption text-decoration-none text-blue"
             href="#"
             rel="noopener noreferrer"
             target="_blank"
           >
-            Recuperar Contraseña</a>
+            Recuperar Contraseña</a>-->
         </div>
   
         <v-text-field
@@ -65,16 +75,7 @@
           Iniciar Sesion
         </v-btn>
   
-        <v-card-text class="text-center">
-          <a
-            class="text-blue text-decoration-none"
-            href="#"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Registrar <v-icon icon="mdi-chevron-right"></v-icon>
-          </a>
-        </v-card-text>
+       
       </v-card>
     </div>
     <v-footer color="primary" dark app>
@@ -105,12 +106,14 @@
   const visible = ref(false)
   const username = ref('')
   const password = ref('')
+  const errorMessage = ref('')
   const router = useRouter();
   
   const toggleVisibility = () => {
     visible.value = !visible.value
   }
-  
+
+
   const login = async () => {
 
     
@@ -120,15 +123,12 @@
         username: username.value,
         password: password.value
       };
-    console.log('Login attempt with:', username.value, password.value)
 
     try {
         const response = await axios.post('http://localhost:8080/auth/login', loginData,{withCredentials: true});
 
-        console.log("respuesta " + response.data)
         if (response.status === 200) {
           const { role } = response.data; 
-          console.log("respuesta " + response)
           localStorage.setItem('userRole', role);
 
           if (role === 'ADMIN') {
@@ -138,11 +138,14 @@
           } else {
             router.push('/');
           }
+          errorMessage.value = '';
         }
+        else{
+          errorMessage.value = response.data.message || 'Error desconocido durante el inicio de sesión.';
+        }
+        
       } catch (error) {
-        console.error('Error en la solicitud de login:', error);
-        this.errorMessage = 'Credenciales incorrectas. Inténtalo de nuevo.';
-        console.error('Error de inicio de sesión:', error.response.data.message);
+        errorMessage.value = error.response?.data?.message || 'Error en la solicitud de login. Por favor, intente nuevamente.';
       }
   }
   </script>
