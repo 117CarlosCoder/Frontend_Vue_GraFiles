@@ -96,9 +96,7 @@
       return;
     }
   
-    console.log('Cambiando contraseña...');
-    console.log('Contraseña actual:', currentPassword.value);
-    console.log('Nueva contraseña:', newPassword.value);
+   
   
 
     loading.value = true;
@@ -110,7 +108,7 @@
 
     try {
         const response = await axios.post(`http://localhost:8080/user/change/password`, loadData, { withCredentials: true });
-        console.log(response);
+   
         successMessage.value = 'Contraseña cambiada con exito';
         currentPassword.value = "";
         newPassword.value = "";
@@ -119,7 +117,7 @@
        
 
       } catch (error) {
-        console.error("Error change password:", error);
+
         errorMessage.value = error.response.data || error.message || 'Ocurrió un error inesperado';
       }
 

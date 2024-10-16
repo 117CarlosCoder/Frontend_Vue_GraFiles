@@ -93,7 +93,6 @@ import ShareDialog from './ShareDialog.vue';
         try {
           const response = await axios.get(`http://localhost:8080/file/get/shared`, { withCredentials: true });
           files.value = response.data;
-          console.log(files.value)
         } catch (error) {
           console.error("Error fetching files:", error);
         }
@@ -107,7 +106,6 @@ import ShareDialog from './ShareDialog.vue';
       };
   
       const showInfo = () => {
-        console.log("Show info");
       };
   
      

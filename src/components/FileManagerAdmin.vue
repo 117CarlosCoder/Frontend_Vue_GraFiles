@@ -57,7 +57,6 @@ import CreateEmployee from './createEmployee.vue';
         try {
           const response = await axios.get('http://localhost:8080/user/get/info', { withCredentials: true });
           user.value = response.data;
-          console.log(user.value)
         } catch (error) {
           console.error("Error fetching employees:", error);
         }

@@ -80,7 +80,7 @@
 
     <v-dialog v-model="shareDialog" max-width="400">
         <v-card>
-            <v-card-title class="headline">Compartir Carpeta</v-card-title>
+            <v-card-title class="headline">Compartir </v-card-title>
             <v-card-text>
                 <v-text-field v-model="shareEmail" label="Correo electrónico" type="email"></v-text-field>
             </v-card-text>
@@ -247,22 +247,17 @@ export default {
             if (fileToDelete.value && !fileToDelete.value.fileType) {
                 try {
                     await axios.delete(`http://localhost:8080/directory/deleted?id=${fileToDelete.value.id}`, { withCredentials: true });
-                    console.log("Delete file:", fileToDelete.value.name);
                     emit('change');
                 } catch (error) {
                     errorMessage.value = error.response.data || error.message || 'Ocurrió un error inesperado';
-        console.error("Error fetching files:", error);
                 }
             }
             if (fileToDelete.value && fileToDelete.value.fileType) {
                 try {
-                    console.log(fileToDelete.value)
                     await axios.delete(`http://localhost:8080/file/deleted?id=${fileToDelete.value.id}`, { withCredentials: true });
-                    console.log("Delete file:", fileToDelete.value.name);
                     emit('change');
                 } catch (error) {
                     errorMessage.value = error.response.data || error.message || 'Ocurrió un error inesperado';
-        console.error("Error fetching files:", error);
                 }
             }
             deleteDialog.value = false;
@@ -283,14 +278,12 @@ export default {
                     formData.append('email', shareEmail.value);
 
                     await axios.post(`http://localhost:8080/file/share`, formData, { withCredentials: true });
-                    console.log("Share folder:", fileToShare.value.name, "with", shareEmail.value);
                     successMessage.value = 'Archivo Compartido con exito';
                     setTimeout(() => {
                     emit('change');},2000);
                     
                 } catch (error) {
                     errorMessage.value = error.response.data || error.message || 'Ocurrió un error inesperado';
-        console.error("Error fetching files:", error);
                 }
             }
             shareDialog.value = false;
@@ -348,13 +341,11 @@ export default {
                 };
                 try {
                     const response = await axios.put(`http://localhost:8080/directory/updated`, loadData, { withCredentials: true });
-                    console.log("Update folder name:", fileToEdit.value.name, "to", newFolderName.value);
                     successMessage.value = response.data;
                     emit('change');
                     
                 } catch (error) {
                     errorMessage.value = error.response.data || error.message || 'Ocurrió un error inesperado';
-        console.error("Error fetching files:", error);
                 }
             }
             editNameDialog.value = false;
@@ -378,7 +369,6 @@ export default {
 
             const blob = new Blob([fileContent.value], { type: 'text/plain' });
             const fullFileName = `${fileName.value}${fileExtension.value}`;
-            console.log(fullFileName)
 
             const formData = new FormData();
             formData.append('file', new File([blob], fullFileName));
@@ -393,7 +383,6 @@ export default {
                         'Content-Type': 'multipart/form-data'
                     }
                 });
-                console.log(response.data);
 
                 successMessage.value = 'Archivo Actualizdo con exito';
                 createFileDialog.value = false;
@@ -407,13 +396,10 @@ export default {
 
             } catch (error) {
                 errorMessage.value = error.response.data || error.message || 'Ocurrió un error inesperado';
-                console.error("Error fetching files:", error);
             }
         };
 
         const editFile = (file) => {
-
-            console.log(file)
             confirmEditName(file);
         };
 
@@ -435,12 +421,9 @@ export default {
                 const response = await axios.post(`http://localhost:8080/directory/copy`, formData, {
                     withCredentials: true,
                 });
-
-                console.log(response)
                 emit('change');
             } catch (error) {
                 errorMessage.value = error.response.data || error.message || 'Ocurrió un error inesperado';
-        console.error("Error fetching files:", error);
             }
         };
 
@@ -452,12 +435,9 @@ export default {
                 const response = await axios.post(`http://localhost:8080/file/copy`, formData, {
                     withCredentials: true,
                 });
-
-                console.log(response)
                 emit('change');
             } catch (error) {
                 errorMessage.value = error.response.data || error.message || 'Ocurrió un error inesperado';
-        console.error("Error fetching files:", error);
             }
         };
 
@@ -467,7 +447,6 @@ export default {
 
         const openCreateFile = (file) => {
 
-            console.log(file)
             const dotIndex = file.name.lastIndexOf('.');
             if (dotIndex > 0 && dotIndex < file.name.length - 1) {
                 // Dividir en nombre y extensión
@@ -508,7 +487,6 @@ export default {
                         'Content-Type': 'multipart/form-data'
                     }
                 });
-                console.log(response.data);
                 updateImageDialog.value = false;
                 successMessage.value = 'Imagen Actualizado con éxito';
                 emit('change');

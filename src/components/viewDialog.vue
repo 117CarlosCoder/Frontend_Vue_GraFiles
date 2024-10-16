@@ -82,9 +82,7 @@
       };
   
       const decodedContent = computed(() => {
-        console.log(props.file)
         if (props.file.content) {
-            console.log(props.file)
           return atob(props.file.content);
         }
         return '';

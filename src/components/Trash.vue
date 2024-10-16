@@ -151,8 +151,6 @@
           files.value = [...files.value, ...responsefile.data];
           files.value = [...files.value, ...responseSharesfiles.data];
           updateBreadcrumbs();
-          console.log(response)
-  
         } catch (error) {
           console.error("Error fetching files:", error);
         }
@@ -238,7 +236,6 @@
       };
   
       const showInfo = () => {
-        console.log("Show info");
       };
   
   

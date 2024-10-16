@@ -243,7 +243,6 @@ export default {
     };
 
     const showInfo = () => {
-      console.log("Show info");
     };
 
 

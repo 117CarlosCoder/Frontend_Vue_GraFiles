@@ -84,7 +84,7 @@
   });
   
   const createUser = async () => {
-    console.log('Creating user:', user);
+
 
       snackbar.text = 'Usuario creado exitosamente';
       snackbar.color = 'success';
@@ -93,7 +93,6 @@
       try {
           const response = await axios.post(`http://localhost:8080/admin/create/User`, user, { withCredentials: true });
   
-          console.log(response)
           user.update = false;
           user.role = null;
           isFormValid.value = false;

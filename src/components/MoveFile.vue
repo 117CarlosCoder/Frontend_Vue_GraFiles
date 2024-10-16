@@ -174,7 +174,6 @@
     directory_parent_id: currentDirectory.value 
   };
   
-  console.log('Moving to directory:', loadData.directory_parent_id, ' y el id ', loadData.id,);
   
   try {
     const endpoint = props.fileToMove.fileType ? 'file/move' : 'directory/move';

@@ -118,9 +118,7 @@ export default {
     const confirmDelete = async () => {
       if (props.file && props.file.fileType) {
         try {
-          console.log(props.file);
           await axios.delete(`http://localhost:8080/file/deletedShare?id=${props.file.id}`, { withCredentials: true });
-          console.log("Delete file:", props.file.name);
         } catch (error) {
           console.error("Error deleting file:", error);
         }

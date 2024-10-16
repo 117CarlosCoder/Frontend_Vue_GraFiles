@@ -143,7 +143,6 @@ export default {
         createDirectoryDialog.value = false;
       } catch (error) {
         errorMessage.value = error.response.data || error.message || 'Ocurrió un error inesperado';
-        console.error('Error creando el directorio:', error);
       }
     };
 
@@ -175,12 +174,10 @@ export default {
             'Content-Type': 'multipart/form-data'
           }
         });
-        console.log(response.data);
         createFileDialog.value = false;
         emit('created');
       } catch (error) {
         errorMessage.value = error.response.data || error.message || 'Ocurrió un error inesperado';
-        console.error('Error subiendo el archivo:', error);
       }
     };
 
@@ -220,14 +217,11 @@ export default {
         'Content-Type': 'multipart/form-data'
       }
     });
-    console.log(response.data);
     uploadImageDialog.value = false;
     emit('created');
   } catch (error) {
-    console.error('Error subiendo la imagen:', error);
     if (error.response) {
       errorMessage.value = error.response.data || error.message || 'Ocurrió un error inesperado';
-      console.error('Detalles del error:', error.response.data);
       alert(`Error: ${error.response.data.message || 'Ya exite un archivo con ese nomnbre'}`);
     }
   }

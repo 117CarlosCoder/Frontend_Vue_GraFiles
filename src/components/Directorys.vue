@@ -53,11 +53,9 @@ import NewFile from './NewFile.vue';
   
       const fetchFiles = async () => {
         directoryId= id.value === "" ? rootdirectory : id.value;
-        console.log(directoryId)
         try {
           const response = await axios.get(`http://localhost:8080/directory/gets?id=${directoryId}`, { withCredentials: true });
           files.value = response.data;
-          console.log(files.value);
         } catch (error) {
           console.error("Error fetching files:", error);
         }
@@ -69,11 +67,8 @@ import NewFile from './NewFile.vue';
   
       const selectDirectory = async (file) => {
         routeSave.value.push(file.directory_parent_id);
-        console.log("Route save")
-        console.log(routeSave)
+
         fileActual.value = file;
-        console.log("Directory actual")
-        console.log(fileActual.value)
         id.value = file.id;
          directoryId = id.value === "" ? rootdirectory : id.value;
 
@@ -81,25 +76,19 @@ import NewFile from './NewFile.vue';
           arrowActive.value =true;
          }
 
-        console.log(directoryId)
-
         try {
           const response = await axios.get(`http://localhost:8080/directory/gets?id=${directoryId}`, { withCredentials: true });
           files.value = response.data;
-          console.log(files.value);
         } catch (error) {
           console.error("Error fetching files:", error);
         }
       };
 
       const routeChange = async () =>{
-        console.log(routeSave.value);
-        console.log(directoryId)
 
         try {
           const response = await axios.get(`http://localhost:8080/directory/gets?id=${routeSave.value.pop()}`, { withCredentials: true });
           files.value = response.data;
-          console.log(routeSave.value);
           if (routeSave.value.length == 0) {
             arrowActive.value =false;
           }
