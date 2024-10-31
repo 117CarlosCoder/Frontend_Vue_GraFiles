@@ -60,7 +60,7 @@
             </v-btn>
           </template>
           <template v-if="file">
-            <MultiDialog @change="fetchFilesChange" :file="file" />
+            <MultiDialog @change="fetchFilesChange(file)" :file="file" />
           </template>
         </v-menu>
       </v-card-actions>
@@ -77,7 +77,7 @@
             </v-btn>
           </template>
           <template v-if="file">
-            <MultiDialog @change="fetchFilesChange" :file="file" />
+            <MultiDialog @change="fetchFilesChange(file)" :file="file" />
           </template>
         </v-menu>
       </v-card-actions>
@@ -94,7 +94,7 @@
             </v-btn>
           </template>
           <template v-if="file">
-            <MultiDialog @change="fetchFilesChange" :file="file" />
+            <MultiDialog @change="fetchFilesChange(file)" :file="file" />
           </template>
         </v-menu>
       </v-card-actions>
@@ -137,7 +137,10 @@ export default {
     const errorMessage = ref('');
 
     const fetchFiles = async () => {
+    
+     
       directoryId.value = id.value === "" ? rootdirectory : id.value;
+     
       try {
         const response = await axios.get(`http://localhost:8080/directory/gets?id=${directoryId.value}`, { withCredentials: true });
         files.value = response.data;
@@ -151,7 +154,7 @@ export default {
 
         files.value = [...files.value, ...responsefile.data];
         updateBreadcrumbs();
-
+        
     
 
       } catch (error) {
@@ -161,9 +164,20 @@ export default {
     };
 
 
-    const fetchFilesChange = async () => {
-      directoryId.value = id.value === "" ? rootdirectory : id.value;
+    const fetchFilesChange = async (file = undefined) => {
+      if (file !== undefined && file.directory_parent_id !== undefined) {
+        directoryId.value = file.directory_parent_id;
+        
+      }else{
+        directoryId.value = id.value === "" ? rootdirectory : id.value;
+      }
+      
       try {
+
+        if (directoryId.value == undefined) {
+          directoryId.value = rootdirectory;
+        }
+
         const response = await axios.get(`http://localhost:8080/directory/gets?id=${directoryId.value}`, { withCredentials: true });
         files.value = response.data;
 
@@ -173,7 +187,7 @@ export default {
         files.value = [...files.value, ...responsefile.data];
         updateBreadcrumbs();
       } catch (error) {
-        errorMessage.value =error || 'Hubo un problema con la solicitud.';
+        //errorMessage.value =error || 'Hubo un problema con la solicitud.';
         console.error("Error fetching files:", error);
       }
     };

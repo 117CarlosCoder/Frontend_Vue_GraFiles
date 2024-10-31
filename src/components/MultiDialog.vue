@@ -337,7 +337,8 @@ export default {
                 const loadData = {
                     "id": fileToEdit.value.id,
                     "name": newFolderName.value,
-                    "directory": fileToEdit.value.directory
+                    "directory": fileToEdit.value.directory,
+                    "directory_parent_id": props.file.directory_parent_id
                 };
                 try {
                     const response = await axios.put(`http://localhost:8080/directory/updated`, loadData, { withCredentials: true });
@@ -355,6 +356,9 @@ export default {
 
 
         const uploadFile = async (file) => {
+
+            console.log(file.id);
+
             const regex = /^[a-zA-Z0-9-_]+$/;
             if (!fileName.value || !fileExtension.value || !fileContent.value) {
                 alert('Faltan datos para crear el archivo');
@@ -489,7 +493,7 @@ export default {
                 });
                 updateImageDialog.value = false;
                 successMessage.value = 'Imagen Actualizado con éxito';
-                emit('change');
+                
                 
             } catch (error) {
                 errorMessage.value = error.response.data || error.message || 'Ocurrió un error inesperado';
@@ -498,7 +502,7 @@ export default {
                     errorMessage.value = error.response.data || error.message || 'Ocurrió un error inesperado';
                 }
             }
-
+            emitChange();
 
         };
 
